@@ -1,6 +1,6 @@
 load("@bazel_gazelle//:def.bzl", "gazelle")
 
-# gazelle:prefix github.com/kruangsuriya/tianfu-bank
+# gazelle:prefix github.com/zhunismp/tianfu-bank
 gazelle(name = "gazelle")
 
 gazelle(

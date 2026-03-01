@@ -2,7 +2,7 @@ package account
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/kruangsuriya/tianfu-bank/services/account-service/core/domain/account"
+	"github.com/zhunismp/tianfu-bank/services/account-service/core/domain/account"
 )
 
 type AccountHttpHandler struct {

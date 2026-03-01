@@ -3,6 +3,6 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 go_library(
     name = "account",
     srcs = ["handler.go"],
-    importpath = "github.com/kruangsuriya/tianfu-bank/services/account-service/adapter/primary/mq/account",
+    importpath = "github.com/zhunismp/tianfu-bank/services/account-service/adapter/primary/mq/account",
     visibility = ["//visibility:public"],
 )

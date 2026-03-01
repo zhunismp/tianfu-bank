@@ -3,7 +3,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 go_library(
     name = "config",
     srcs = ["config.go"],
-    importpath = "github.com/kruangsuriya/tianfu-bank/services/account-service/adapter/secondary/infrastructure/config",
+    importpath = "github.com/zhunismp/tianfu-bank/services/account-service/adapter/secondary/infrastructure/config",
     visibility = ["//visibility:public"],
     deps = ["//services/account-service/core/infrastructure/config"],
 )

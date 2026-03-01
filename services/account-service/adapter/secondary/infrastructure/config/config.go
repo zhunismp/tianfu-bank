@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/kruangsuriya/tianfu-bank/services/account-service/core/infrastructure/config"
+	"github.com/zhunismp/tianfu-bank/services/account-service/core/infrastructure/config"
 )
 
 type ServerConfig struct {

@@ -3,8 +3,16 @@ load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 go_library(
     name = "account-service_lib",
     srcs = ["main.go"],
-    importpath = "github.com/kruangsuriya/tianfu-bank/services/account-service",
+    importpath = "github.com/zhunismp/tianfu-bank/services/account-service",
     visibility = ["//visibility:private"],
+    deps = [
+        "//services/account-service/adapter/primary/http",
+        "//services/account-service/adapter/primary/http/account",
+        "//services/account-service/adapter/secondary/infrastructure/config",
+        "//services/account-service/adapter/secondary/infrastructure/database",
+        "//services/account-service/adapter/secondary/repository/account",
+        "//services/account-service/core/domain/account",
+    ],
 )
 
 go_binary(

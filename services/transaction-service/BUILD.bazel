@@ -3,7 +3,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 go_library(
     name = "transaction-service_lib",
     srcs = ["main.go"],
-    importpath = "github.com/kruangsuriya/tianfu-bank/services/transaction-service",
+    importpath = "github.com/zhunismp/tianfu-bank/services/transaction-service",
     visibility = ["//visibility:private"],
 )
 

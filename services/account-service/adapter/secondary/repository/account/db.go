@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	domain "github.com/kruangsuriya/tianfu-bank/services/account-service/core/domain/account"
+	domain "github.com/zhunismp/tianfu-bank/services/account-service/core/domain/account"
 	"gorm.io/gorm"
 )
 

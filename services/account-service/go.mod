@@ -1,4 +1,4 @@
-module github.com/kruangsuriya/tianfu-bank/services/account-service
+module github.com/zhunismp/tianfu-bank/services/account-service
 
 go 1.24.0
 
@@ -30,4 +30,4 @@ require (
 	golang.org/x/text v0.34.0 // indirect
 )
 
-replace github.com/kruangsuriya/tianfu-bank/shared => ../../shared
+replace github.com/zhunismp/tianfu-bank/shared => ../../shared

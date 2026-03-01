@@ -6,12 +6,12 @@ import (
 	"syscall"
 	"time"
 
-	. "github.com/kruangsuriya/tianfu-bank/services/account-service/adapter/primary/http"
-	. "github.com/kruangsuriya/tianfu-bank/services/account-service/adapter/primary/http/account"
-	. "github.com/kruangsuriya/tianfu-bank/services/account-service/adapter/secondary/infrastructure/config"
-	. "github.com/kruangsuriya/tianfu-bank/services/account-service/adapter/secondary/infrastructure/database"
-	. "github.com/kruangsuriya/tianfu-bank/services/account-service/adapter/secondary/repository/account"
-	. "github.com/kruangsuriya/tianfu-bank/services/account-service/core/domain/account"
+	. "github.com/zhunismp/tianfu-bank/services/account-service/adapter/primary/http"
+	. "github.com/zhunismp/tianfu-bank/services/account-service/adapter/primary/http/account"
+	. "github.com/zhunismp/tianfu-bank/services/account-service/adapter/secondary/infrastructure/config"
+	. "github.com/zhunismp/tianfu-bank/services/account-service/adapter/secondary/infrastructure/database"
+	. "github.com/zhunismp/tianfu-bank/services/account-service/adapter/secondary/repository/account"
+	. "github.com/zhunismp/tianfu-bank/services/account-service/core/domain/account"
 )
 
 func main() {

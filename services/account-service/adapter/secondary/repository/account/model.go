@@ -3,7 +3,7 @@ package account
 import (
 	"time"
 
-	"github.com/kruangsuriya/tianfu-bank/services/account-service/core/domain/account"
+	"github.com/zhunismp/tianfu-bank/services/account-service/core/domain/account"
 )
 
 // Represents the account schema in database

@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/kruangsuriya/tianfu-bank/services/account-service/core/infrastructure/config"
+	"github.com/zhunismp/tianfu-bank/services/account-service/core/infrastructure/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

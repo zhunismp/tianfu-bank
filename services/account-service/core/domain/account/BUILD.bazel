@@ -7,6 +7,6 @@ go_library(
         "port.go",
         "service.go",
     ],
-    importpath = "github.com/kruangsuriya/tianfu-bank/services/account-service/core/domain/account",
+    importpath = "github.com/zhunismp/tianfu-bank/services/account-service/core/domain/account",
     visibility = ["//visibility:public"],
 )

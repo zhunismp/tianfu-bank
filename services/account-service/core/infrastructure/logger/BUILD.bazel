@@ -3,6 +3,6 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 go_library(
     name = "logger",
     srcs = ["port.go"],
-    importpath = "github.com/kruangsuriya/tianfu-bank/services/account-service/core/infrastructure/logger",
+    importpath = "github.com/zhunismp/tianfu-bank/services/account-service/core/infrastructure/logger",
     visibility = ["//visibility:public"],
 )

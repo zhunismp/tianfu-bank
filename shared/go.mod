@@ -1,3 +1,3 @@
-module github.com/kruangsuriya/tianfu-bank/shared
+module github.com/zhunismp/tianfu-bank/shared
 
 go 1.21.1

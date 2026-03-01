@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/kruangsuriya/tianfu-bank/services/account-service/adapter/primary/http/account"
+	"github.com/zhunismp/tianfu-bank/services/account-service/adapter/primary/http/account"
 )
 
 type RouteGroup struct {

@@ -6,10 +6,10 @@ go_library(
         "db.go",
         "model.go",
     ],
-    importpath = "github.com/kruangsuriya/tianfu-bank/services/account-service/adapter/secondary/repository/account",
+    importpath = "github.com/zhunismp/tianfu-bank/services/account-service/adapter/secondary/repository/account",
     visibility = ["//visibility:public"],
     deps = [
         "//services/account-service/core/domain/account",
-        "@io_gorm_gorm//:go_default_library",
+        "@io_gorm_gorm//:gorm",
     ],
 )
