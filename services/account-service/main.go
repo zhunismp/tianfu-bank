@@ -41,4 +41,5 @@ func main() {
 	defer cancel()
 
 	httpServer.Shutdown(shutdownCtx)
+	ShutdownDatabase(db)
 }

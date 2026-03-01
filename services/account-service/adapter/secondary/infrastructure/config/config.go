@@ -43,7 +43,7 @@ var _ config.PubsubConfigProvider = (*AppEnvConfig)(nil)
 func LoadConfig() (*AppEnvConfig, error) {
 	serverCfg := &ServerConfig{
 		Env:           getEnv("SERVER_ENV", "development"),
-		Name:          getEnv("SERVER_NAME", "MyApp"),
+		Name:          getEnv("SERVER_NAME", "tianfu-account-service"),
 		Host:          getEnv("SERVER_HOST", "0.0.0.0"),
 		Port:          getEnv("SERVER_PORT", "8080"),
 		BaseApiPrefix: getEnv("SERVER_BASEAPIPREFIX", "/api/v1"),
@@ -53,8 +53,8 @@ func LoadConfig() (*AppEnvConfig, error) {
 		Host:     getEnv("DB_HOST", "localhost"),
 		Port:     getEnv("DB_PORT", "5432"),
 		User:     getEnv("DB_USER", "postgres"),
-		Password: getEnv("DB_PASSWORD", "1234"),
-		Name:     getEnv("DB_NAME", "mydatabase"),
+		Password: getEnv("DB_PASSWORD", "password"),
+		Name:     getEnv("DB_NAME", "account_db"),
 		SSLMode:  getEnv("DB_SSLMODE", "disable"),
 		Timezone: getEnv("DB_TIMEZONE", "Asia/Bangkok"),
 	}

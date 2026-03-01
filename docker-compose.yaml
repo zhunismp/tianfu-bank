@@ -41,7 +41,7 @@ services:
       - kafka
   
   account_db:
-    image: postgres:15.5
+    image: postgres:16
     container_name: account_db
     restart: unless-stopped
     environment:
@@ -54,7 +54,7 @@ services:
       - account_db_data:/var/lib/postgresql/data
   
   transaction_db:
-    image: postgres:15.5
+    image: postgres:16
     container_name: transaction_db
     restart: unless-stopped
     environment:

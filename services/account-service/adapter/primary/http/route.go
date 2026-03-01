@@ -26,6 +26,10 @@ func (s *HttpServer) SetUpRoute(routeGroup *RouteGroup) {
 		accountRouter.Get("/:accountId", account.GetAccount)
 	})
 
+	s.fiberApp.Get("/health", func(c *fiber.Ctx) error {
+		return c.JSON(fiber.Map{"status": "ok"})
+	})
+
 	slog.Info("HTTP routes was setup successfully")
 }
 

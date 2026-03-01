@@ -25,11 +25,12 @@ func NewHttpServer(cfg config.AppConfigProvider) *HttpServer {
 	})
 
 	app.Use(recover.New())
-	app.Use(logger.Config{
-		Format:     "[${time}] ${status} - ${method} ${path}\n",
+	app.Use(logger.New(logger.Config{
+		Format:     "${time} ${status} - ${method} ${path}\n",
 		TimeFormat: "2003/03/28 23:30:00",
+		TimeInterval: 0,
 		TimeZone:   "Asia/Bangkok",
-	})
+	}))
 	app.Use(cors.New(cors.Config{
 		AllowOrigins:     "*",
 		AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS,PATCH",
