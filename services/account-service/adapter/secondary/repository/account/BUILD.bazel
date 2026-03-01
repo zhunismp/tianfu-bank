@@ -1,0 +1,15 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "account",
+    srcs = [
+        "db.go",
+        "model.go",
+    ],
+    importpath = "github.com/kruangsuriya/tianfu-bank/services/account-service/adapter/secondary/repository/account",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//services/account-service/core/domain/account",
+        "@io_gorm_gorm//:go_default_library",
+    ],
+)

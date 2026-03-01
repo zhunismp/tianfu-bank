@@ -1,0 +1,14 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "database",
+    srcs = ["postgres.go"],
+    importpath = "github.com/kruangsuriya/tianfu-bank/services/account-service/adapter/secondary/infrastructure/database",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//services/account-service/core/infrastructure/config",
+        "@io_gorm_driver_postgres//:go_default_library",
+        "@io_gorm_gorm//:go_default_library",
+        "@io_gorm_gorm//logger:go_default_library",
+    ],
+)

@@ -1,0 +1,34 @@
+load("@bazel_gazelle//:def.bzl", "gazelle")
+
+# gazelle:prefix github.com/kruangsuriya/tianfu-bank
+gazelle(name = "gazelle")
+
+gazelle(
+    name = "gazelle-update-repos-shared",
+    args = [
+        "-from_file=./shared/go.mod",
+        "-to_macro=deps.bzl%go_dependencies",
+        "-prune",
+    ],
+    command = "update-repos",
+)
+
+gazelle(
+    name = "gazelle-update-repos-account",
+    args = [
+        "-from_file=./services/account-service/go.mod",
+        "-to_macro=deps.bzl%go_dependencies",
+        "-prune",
+    ],
+    command = "update-repos",
+)
+
+gazelle(
+    name = "gazelle-update-repos-transaction",
+    args = [
+        "-from_file=./services/transaction-service/go.mod",
+        "-to_macro=deps.bzl%go_dependencies",
+        "-prune",
+    ],
+    command = "update-repos",
+)
