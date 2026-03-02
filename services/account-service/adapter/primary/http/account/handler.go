@@ -21,6 +21,7 @@ func (h *AccountHttpHandler) CreateAccount(c *fiber.Ctx) error {
 
 	cmd := account.CreateAccountCmd{
 		UserId:      req.UserId,
+		BranchId:    req.BranchId,
 		AccountType: req.AccountType,
 	}
 

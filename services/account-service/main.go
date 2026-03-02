@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log/slog"
 	"os/signal"
 	"syscall"
 	"time"
@@ -42,4 +43,6 @@ func main() {
 
 	httpServer.Shutdown(shutdownCtx)
 	ShutdownDatabase(db)
+
+	slog.Info("Application shutdown gracefully")
 }
