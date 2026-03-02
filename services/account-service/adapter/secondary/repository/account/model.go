@@ -23,11 +23,12 @@ func (a *AccountModel) TableName() string {
 
 func (a *AccountModel) ToEntity() *account.Account {
 	return &account.Account{
-		AccountId: a.AccountId,
-		UserId:    a.UserId,
-		BranchId:  a.BranchId,
-		Balance:   a.Balance,
-		CreatedAt: a.CreatedAt,
-		UpdatedAt: a.UpdatedAt,
+		AccountId:   a.AccountId,
+		UserId:      a.UserId,
+		BranchId:    a.BranchId,
+		AccountType: a.AccountType,
+		Balance:     a.Balance,
+		CreatedAt:   a.CreatedAt,
+		UpdatedAt:   a.UpdatedAt,
 	}
 }

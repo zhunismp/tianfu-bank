@@ -1,0 +1,14 @@
+CREATE SEQUENCE account_seq
+    START WITH 1
+    INCREMENT BY 1
+    CACHE 1;
+
+CREATE TABLE account (
+    account_id VARCHAR(36) PRIMARY KEY,
+    user_id VARCHAR(36) NOT NULL,
+    account_type VARCHAR(20) NOT NULL,
+    branch_id VARCHAR(36) NOT NULL,
+    balance NUMERIC(20,2) NOT NULL DEFAULT 0,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
