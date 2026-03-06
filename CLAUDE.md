@@ -12,25 +12,17 @@ Services share a `shared/` module containing RabbitMQ connection helpers and com
 
 ## Build System
 
-The project uses both **Go workspaces** and **Bazel**:
+The project uses **Go workspaces**:
 
 - Go workspace root: `go.work` (links `shared/`, `services/account-service/`, `services/transaction-service/`)
 - Each service has its own `go.mod`; `shared` is referenced via `replace` directive pointing to `../../shared`
-- Bazel build files (`.bazel`) exist alongside Go modules for hermetic builds
 
-### Running services (Go)
+### Running services
 
 ```bash
 # From service directory
 cd services/account-service && go run .
 cd services/transaction-service && go run .
-```
-
-### Bazel builds
-
-```bash
-bazel build //services/account-service:account-service
-bazel build //services/transaction-service:...
 ```
 
 ## Infrastructure (Docker Compose)
@@ -135,4 +127,25 @@ Use `shared/apperror.New(code, message, err)` for domain errors. `AppError` carr
 
 ## Tests
 
-There are currently no test files in this repository.
+All tests are pure unit tests with inline mocks using `testify/mock` — no external dependencies (DB, RabbitMQ) needed.
+
+```bash
+# Run all tests for a service
+cd services/account-service && go test ./...
+cd services/transaction-service && go test ./...
+
+# Run a single package
+go test ./core/domain/account/...
+
+# Run a specific test
+go test ./core/domain/account/ -run TestAccountService_CreateAccount_CreatesAccountAndPublishesEvent -v
+```
+
+### Test patterns
+
+- **Domain service tests** — inline mock structs implementing port interfaces; located in the same package (e.g., `package account`)
+- **HTTP handler tests** — use `fiber.App.Test()` with `httptest.NewRequest`; located in `package account_test`
+- **Publisher tests** — mock the `AMQPChannel` interface (defined in `amqp_channel.go` next to the production code) to avoid a real broker
+- **Consumer tests** — feed mock `amqp.Delivery` values through a channel to test message processing logic
+
+When adding tests for a new adapter that wraps an external client, define a narrow interface (like `AMQPChannel`) in an `<adapter>_channel.go` file alongside the production code, then mock it in the test.

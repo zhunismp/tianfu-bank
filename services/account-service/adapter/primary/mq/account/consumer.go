@@ -13,11 +13,11 @@ import (
 // BalanceUpdatedConsumer listens for balance.updated events from transaction-service
 // and updates the account balance in the local read model.
 type BalanceUpdatedConsumer struct {
-	ch          *amqp.Channel
+	ch          AMQPChannel
 	accountRepo domain.AccountRepository
 }
 
-func NewBalanceUpdatedConsumer(ch *amqp.Channel, accountRepo domain.AccountRepository) *BalanceUpdatedConsumer {
+func NewBalanceUpdatedConsumer(ch AMQPChannel, accountRepo domain.AccountRepository) *BalanceUpdatedConsumer {
 	return &BalanceUpdatedConsumer{
 		ch:          ch,
 		accountRepo: accountRepo,

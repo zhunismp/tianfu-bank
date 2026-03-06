@@ -1,8 +1,0 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_library")
-
-go_library(
-    name = "mq",
-    srcs = ["mq.go"],
-    importpath = "github.com/zhunismp/tianfu-bank/services/account-service/adapter/primary/mq",
-    visibility = ["//visibility:public"],
-)

@@ -12,10 +12,10 @@ import (
 )
 
 type balancePublisher struct {
-	ch *amqp.Channel
+	ch AMQPChannel
 }
 
-func NewBalancePublisher(ch *amqp.Channel) *balancePublisher {
+func NewBalancePublisher(ch AMQPChannel) *balancePublisher {
 	return &balancePublisher{ch: ch}
 }
 

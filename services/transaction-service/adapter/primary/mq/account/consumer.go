@@ -14,13 +14,13 @@ import (
 // AccountCreatedConsumer listens for account.created events from account-service
 // and saves accounts to the local registry + creates initial snapshots.
 type AccountCreatedConsumer struct {
-	ch           *amqp.Channel
+	ch           AMQPChannel
 	snapshotRepo domain.SnapshotRepository
 	eventStore   domain.EventStoreRepository
 }
 
 func NewAccountCreatedConsumer(
-	ch *amqp.Channel,
+	ch AMQPChannel,
 	snapshotRepo domain.SnapshotRepository,
 	eventStore domain.EventStoreRepository,
 ) *AccountCreatedConsumer {

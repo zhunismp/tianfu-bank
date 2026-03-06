@@ -12,10 +12,10 @@ import (
 )
 
 type accountPublisher struct {
-	ch *amqp.Channel
+	ch AMQPChannel
 }
 
-func NewAccountPublisher(ch *amqp.Channel) domain.EventPublisher {
+func NewAccountPublisher(ch AMQPChannel) domain.EventPublisher {
 	return &accountPublisher{ch: ch}
 }
 
