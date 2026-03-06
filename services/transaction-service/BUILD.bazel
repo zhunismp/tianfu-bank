@@ -5,6 +5,19 @@ go_library(
     srcs = ["main.go"],
     importpath = "github.com/zhunismp/tianfu-bank/services/transaction-service",
     visibility = ["//visibility:private"],
+    deps = [
+        "//services/transaction-service/adapter/primary/http",
+        "//services/transaction-service/adapter/primary/http/transaction",
+        "//services/transaction-service/adapter/primary/mq/account",
+        "//services/transaction-service/adapter/secondary/infrastructure/config",
+        "//services/transaction-service/adapter/secondary/infrastructure/database",
+        "//services/transaction-service/adapter/secondary/messaging/rabbitmq",
+        "//services/transaction-service/adapter/secondary/repository/event_store",
+        "//services/transaction-service/adapter/secondary/repository/idempotency",
+        "//services/transaction-service/adapter/secondary/repository/snapshot",
+        "//services/transaction-service/core/domain/transaction",
+        "//shared/messaging",
+    ],
 )
 
 go_binary(

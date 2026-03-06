@@ -8,10 +8,13 @@ go_library(
     deps = [
         "//services/account-service/adapter/primary/http",
         "//services/account-service/adapter/primary/http/account",
+        "//services/account-service/adapter/primary/mq/account",
         "//services/account-service/adapter/secondary/infrastructure/config",
         "//services/account-service/adapter/secondary/infrastructure/database",
+        "//services/account-service/adapter/secondary/messaging/rabbitmq",
         "//services/account-service/adapter/secondary/repository/account",
         "//services/account-service/core/domain/account",
+        "//shared/messaging",
     ],
 )
 

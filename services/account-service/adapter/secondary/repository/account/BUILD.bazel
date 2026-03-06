@@ -10,6 +10,7 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//services/account-service/core/domain/account",
+        "@com_github_shopspring_decimal//:decimal",
         "@io_gorm_gorm//:gorm",
     ],
 )

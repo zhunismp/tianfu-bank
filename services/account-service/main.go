@@ -7,34 +7,59 @@ import (
 	"syscall"
 	"time"
 
-	. "github.com/zhunismp/tianfu-bank/services/account-service/adapter/primary/http"
-	. "github.com/zhunismp/tianfu-bank/services/account-service/adapter/primary/http/account"
-	. "github.com/zhunismp/tianfu-bank/services/account-service/adapter/secondary/infrastructure/config"
-	. "github.com/zhunismp/tianfu-bank/services/account-service/adapter/secondary/infrastructure/database"
-	. "github.com/zhunismp/tianfu-bank/services/account-service/adapter/secondary/repository/account"
-	. "github.com/zhunismp/tianfu-bank/services/account-service/core/domain/account"
+	httpAdapter "github.com/zhunismp/tianfu-bank/services/account-service/adapter/primary/http"
+	"github.com/zhunismp/tianfu-bank/services/account-service/adapter/primary/http/account"
+	mqConsumer "github.com/zhunismp/tianfu-bank/services/account-service/adapter/primary/mq/account"
+	cfgAdapter "github.com/zhunismp/tianfu-bank/services/account-service/adapter/secondary/infrastructure/config"
+	dbAdapter "github.com/zhunismp/tianfu-bank/services/account-service/adapter/secondary/infrastructure/database"
+	mqPublisher "github.com/zhunismp/tianfu-bank/services/account-service/adapter/secondary/messaging/rabbitmq"
+	accountRepo "github.com/zhunismp/tianfu-bank/services/account-service/adapter/secondary/repository/account"
+	domain "github.com/zhunismp/tianfu-bank/services/account-service/core/domain/account"
+	"github.com/zhunismp/tianfu-bank/shared/messaging"
 )
 
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
-	cfg, err := LoadConfig()
+	cfg, err := cfgAdapter.LoadConfig()
 	if err != nil {
 		panic("ERROR: Failed to load config: " + err.Error())
 	}
 
-	db := NewPostgresDatabase(cfg)
+	db := dbAdapter.NewPostgresDatabase(cfg)
 
-	accountRepo := NewAccountRepository(db)
-	accountSvc := NewAccountService(accountRepo)
-	accountHttp := NewAccountHttpHandler(accountSvc)
+	// --- RabbitMQ ---
+	rmqCfg := &messaging.RabbitMQConfig{
+		Host:     cfg.GetRabbitMQHost(),
+		Port:     cfg.GetRabbitMQPort(),
+		User:     cfg.GetRabbitMQUser(),
+		Password: cfg.GetRabbitMQPassword(),
+	}
+	rmqConn, rmqCh, err := messaging.ConnectRabbitMQ(rmqCfg)
+	if err != nil {
+		panic("ERROR: Failed to connect to RabbitMQ: " + err.Error())
+	}
 
-	routeGroup := NewRouteGroup(accountHttp)
+	// --- Repositories & Publisher ---
+	repo := accountRepo.NewAccountRepository(db)
+	publisher := mqPublisher.NewAccountPublisher(rmqCh)
 
-	httpServer := NewHttpServer(cfg)
+	// --- Service ---
+	accountSvc := domain.NewAccountService(repo, publisher)
+	accountHttp := account.NewAccountHttpHandler(accountSvc)
+
+	routeGroup := httpAdapter.NewRouteGroup(accountHttp)
+
+	httpServer := httpAdapter.NewHttpServer(cfg)
 	httpServer.SetUpRoute(routeGroup)
 	httpServer.Start()
+
+	// --- MQ Consumer ---
+	consumer := mqConsumer.NewBalanceUpdatedConsumer(rmqCh, repo)
+	if err := consumer.Start(ctx); err != nil {
+		panic("ERROR: Failed to start BalanceUpdated consumer: " + err.Error())
+	}
 
 	<-ctx.Done()
 
@@ -42,7 +67,8 @@ func main() {
 	defer cancel()
 
 	httpServer.Shutdown(shutdownCtx)
-	ShutdownDatabase(db)
+	messaging.CloseRabbitMQ(rmqConn, rmqCh)
+	dbAdapter.ShutdownDatabase(db)
 
 	slog.Info("Application shutdown gracefully")
 }

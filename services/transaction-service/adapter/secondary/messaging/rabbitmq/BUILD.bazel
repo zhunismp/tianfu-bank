@@ -1,0 +1,13 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "rabbitmq",
+    srcs = ["publisher.go"],
+    importpath = "github.com/zhunismp/tianfu-bank/services/transaction-service/adapter/secondary/messaging/rabbitmq",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//shared/messaging",
+        "@com_github_rabbitmq_amqp091_go//:amqp091-go",
+        "@com_github_shopspring_decimal//:decimal",
+    ],
+)

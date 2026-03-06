@@ -2,7 +2,12 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
     name = "account",
-    srcs = ["handler.go"],
+    srcs = ["consumer.go"],
     importpath = "github.com/zhunismp/tianfu-bank/services/account-service/adapter/primary/mq/account",
     visibility = ["//visibility:public"],
+    deps = [
+        "//services/account-service/core/domain/account",
+        "//shared/messaging",
+        "@com_github_rabbitmq_amqp091_go//:amqp091-go",
+    ],
 )

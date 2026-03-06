@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/shopspring/decimal"
 	domain "github.com/zhunismp/tianfu-bank/services/account-service/core/domain/account"
 	"gorm.io/gorm"
 )
@@ -30,7 +31,7 @@ func (r *accountRepository) CreateAccount(ctx context.Context, userId, branchId,
 			UserId:      userId,
 			AccountType: accountType,
 			BranchId:    branchId,
-			Balance:     0,
+			Balance:     decimal.Zero,
 		}
 		return tx.Create(&am).Error
 	})
@@ -48,4 +49,11 @@ func (r *accountRepository) GetAccountById(ctx context.Context, accountId string
 		return nil, err
 	}
 	return am.ToEntity(), nil
+}
+
+func (r *accountRepository) UpdateBalance(ctx context.Context, accountId string, balance decimal.Decimal) error {
+	if err := r.DB.WithContext(ctx).Model(&AccountModel{}).Where("account_id = ?", accountId).Update("balance", balance).Error; err != nil {
+		return err
+	}
+	return nil
 }

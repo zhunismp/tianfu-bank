@@ -1,0 +1,16 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "snapshot",
+    srcs = [
+        "db.go",
+        "model.go",
+    ],
+    importpath = "github.com/zhunismp/tianfu-bank/services/transaction-service/adapter/secondary/repository/snapshot",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//services/transaction-service/core/domain/transaction",
+        "@com_github_shopspring_decimal//:decimal",
+        "@io_gorm_gorm//:gorm",
+    ],
+)

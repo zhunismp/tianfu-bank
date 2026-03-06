@@ -1,10 +1,19 @@
 package account
 
-import "context"
+import (
+	"context"
+
+	"github.com/shopspring/decimal"
+)
 
 type AccountRepository interface {
 	CreateAccount(ctx context.Context, userId string, branchId string, accountType string) (*Account, error)
 	GetAccountById(ctx context.Context, accountId string) (*Account, error)
+	UpdateBalance(ctx context.Context, accountId string, balance decimal.Decimal) error
+}
+
+type EventPublisher interface {
+	PublishAccountCreated(ctx context.Context, account *Account) error
 }
 
 type AccountService interface {
@@ -14,7 +23,7 @@ type AccountService interface {
 
 type CreateAccountCmd struct {
 	UserId      string
-	BranchId	string
+	BranchId    string
 	AccountType string
 }
 

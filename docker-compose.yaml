@@ -1,45 +1,21 @@
 services:
-  kafka:
-    image: confluentinc/cp-kafka:7.8.3
-    container_name: kafka
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
     ports:
-      - "9092:9092"
-
+      - "5672:5672"
+      - "15672:15672"
     environment:
-      KAFKA_KRAFT_MODE: 'true'
-
-      CLUSTER_ID: '1L6g7nGhU-eAKfL--X25wo'
-      KAFKA_NODE_ID: 1
-
-      KAFKA_PROCESS_ROLES: broker,controller
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://kafka:29092,CONTROLLER://0.0.0.0:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
-      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-
-      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
-
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
     volumes:
-      - kafka_kraft:/var/lib/kafka/data
-  
-  kafdropui:
-    image: obsidiandynamics/kafdrop
-    container_name: kafdropui
-    restart: unless-stopped
-    ports:
-      - "9090:9000"
-    environment:
-      KAFKA_BROKERCONNECT: "kafka:29092"
-      JVM_OPTS: "-Xms32M -Xmx64M"
-      SERVER_SERVLET_CONTEXTPATH: "/"
-    depends_on:
-      - kafka
-  
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   account_db:
     image: postgres:16
     container_name: account_db
@@ -53,7 +29,7 @@ services:
     volumes:
       - account_db_data:/var/lib/postgresql/data
       - ./services/account-service/db/migrations/000001_create_accounts_table.up.sql:/docker-entrypoint-initdb.d/000001_create_accounts_table.up.sql
-  
+
   transaction_db:
     image: postgres:16
     container_name: transaction_db
@@ -66,10 +42,11 @@ services:
       - "5433:5432"
     volumes:
       - transaction_db_data:/var/lib/postgresql/data
-  
+      - ./services/transaction-service/db/migrations/000001_create_transaction_tables.up.sql:/docker-entrypoint-initdb.d/000001_create_transaction_tables.up.sql
+
   pgadmin:
     image: dpage/pgadmin4:6.21
-    container_name: pgadmin 
+    container_name: pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
@@ -80,7 +57,21 @@ services:
       - transaction_db
     restart: unless-stopped
 
+  lgtm:
+    image: grafana/otel-lgtm
+    container_name: lgtm
+    ports:
+      - "3000:3000"   # Grafana
+      - "4317:4317"   # OTLP gRPC
+      - "4318:4318"   # OTLP HTTP
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - lgtm_data:/data
+    restart: unless-stopped
+
 volumes:
-  kafka_kraft:
+  rabbitmq_data:
   account_db_data:
   transaction_db_data:
+  lgtm_data:

@@ -9,4 +9,5 @@ go_library(
     ],
     importpath = "github.com/zhunismp/tianfu-bank/services/account-service/core/domain/account",
     visibility = ["//visibility:public"],
+    deps = ["@com_github_shopspring_decimal//:decimal"],
 )

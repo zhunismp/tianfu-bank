@@ -4,6 +4,9 @@ go 1.24.0
 
 require (
 	github.com/gofiber/fiber/v2 v2.52.12
+	github.com/rabbitmq/amqp091-go v1.10.0
+	github.com/shopspring/decimal v1.4.0
+	github.com/zhunismp/tianfu-bank/shared v0.0.0-00010101000000-000000000000
 	gorm.io/driver/postgres v1.6.0
 	gorm.io/gorm v1.31.1
 )

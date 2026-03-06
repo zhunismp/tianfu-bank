@@ -1,0 +1,15 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "idempotency",
+    srcs = [
+        "db.go",
+        "model.go",
+    ],
+    importpath = "github.com/zhunismp/tianfu-bank/services/transaction-service/adapter/secondary/repository/idempotency",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//services/transaction-service/core/domain/transaction",
+        "@io_gorm_gorm//:gorm",
+    ],
+)

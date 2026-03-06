@@ -1,0 +1,16 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "transaction",
+    srcs = [
+        "dto.go",
+        "handler.go",
+    ],
+    importpath = "github.com/zhunismp/tianfu-bank/services/transaction-service/adapter/primary/http/transaction",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//services/transaction-service/core/domain/transaction",
+        "@com_github_gofiber_fiber_v2//:fiber",
+        "@com_github_shopspring_decimal//:decimal",
+    ],
+)
