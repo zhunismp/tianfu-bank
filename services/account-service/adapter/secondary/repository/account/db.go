@@ -2,9 +2,11 @@ package account
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/shopspring/decimal"
+	"github.com/zhunismp/tianfu-bank/shared/apperror"
 	domain "github.com/zhunismp/tianfu-bank/services/account-service/core/domain/account"
 	"gorm.io/gorm"
 )
@@ -46,6 +48,9 @@ func (r *accountRepository) CreateAccount(ctx context.Context, userId, branchId,
 func (r *accountRepository) GetAccountById(ctx context.Context, accountId string) (*domain.Account, error) {
 	var am AccountModel
 	if err := r.DB.WithContext(ctx).Where("account_id = ?", accountId).First(&am).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, apperror.New(apperror.ErrCodeAccountNotFound, fmt.Sprintf("account not found: %s", accountId), err)
+		}
 		return nil, err
 	}
 	return am.ToEntity(), nil

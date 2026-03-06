@@ -7,6 +7,7 @@ import (
 	"log/slog"
 
 	"github.com/shopspring/decimal"
+	"github.com/zhunismp/tianfu-bank/shared/apperror"
 )
 
 type transactionService struct {
@@ -45,7 +46,7 @@ func (s *transactionService) rehydrate(ctx context.Context, tx TxAdapters, accou
 	}
 
 	if snapshot == nil && len(events) == 0 {
-		return nil, 0, fmt.Errorf("account not found: %s", accountID)
+		return nil, 0, apperror.New(apperror.ErrCodeAccountNotFound, fmt.Sprintf("account not found: %s", accountID), nil)
 	}
 
 	agg.Rehydrate(snapshot, events)

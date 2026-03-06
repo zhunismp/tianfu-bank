@@ -16,8 +16,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
-	domain "github.com/zhunismp/tianfu-bank/services/transaction-service/core/domain/transaction"
 	. "github.com/zhunismp/tianfu-bank/services/transaction-service/adapter/primary/http/transaction"
+	domain "github.com/zhunismp/tianfu-bank/services/transaction-service/core/domain/transaction"
+	"github.com/zhunismp/tianfu-bank/shared/apperror"
 )
 
 // ---- inline mock ----
@@ -155,7 +156,7 @@ func TestDepositHandler_ServiceError(t *testing.T) {
 	svc := new(mockTransactionService)
 	app := newTxTestApp(svc)
 
-	svc.On("Deposit", mock.Anything, mock.Anything).Return(nil, errors.New("insufficient balance"))
+	svc.On("Deposit", mock.Anything, mock.Anything).Return(nil, apperror.New(apperror.ErrCodeInsufficientFunds, "insufficient balance", nil))
 
 	resp := txRequest(app, http.MethodPost, "/transactions/deposit",
 		map[string]any{"account_id": "acc-1", "amount": "100"}, withKey("key-1"))
@@ -195,7 +196,7 @@ func TestWithdrawHandler_ServiceError(t *testing.T) {
 	svc := new(mockTransactionService)
 	app := newTxTestApp(svc)
 
-	svc.On("Withdraw", mock.Anything, mock.Anything).Return(nil, errors.New("insufficient balance"))
+	svc.On("Withdraw", mock.Anything, mock.Anything).Return(nil, apperror.New(apperror.ErrCodeInsufficientFunds, "insufficient balance", nil))
 
 	resp := txRequest(app, http.MethodPost, "/transactions/withdraw",
 		map[string]any{"account_id": "acc-1", "amount": "50"}, withKey("key-1"))
@@ -267,11 +268,11 @@ func TestTransferHandler_ServiceError(t *testing.T) {
 	svc := new(mockTransactionService)
 	app := newTxTestApp(svc)
 
-	svc.On("Transfer", mock.Anything, mock.Anything).Return(nil, errors.New("account not found"))
+	svc.On("Transfer", mock.Anything, mock.Anything).Return(nil, apperror.New(apperror.ErrCodeAccountNotFound, "account not found: src", nil))
 
 	resp := txRequest(app, http.MethodPost, "/transactions/transfer",
 		map[string]any{"source_account_id": "src", "destination_account_id": "dst", "amount": "100"}, withKey("key-1"))
-	assert.Equal(t, http.StatusUnprocessableEntity, resp.StatusCode)
+	assert.Equal(t, http.StatusNotFound, resp.StatusCode)
 }
 
 // ---- GetHistory handler tests ----

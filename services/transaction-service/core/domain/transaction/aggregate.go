@@ -1,9 +1,8 @@
 package transaction
 
 import (
-	"fmt"
-
 	"github.com/shopspring/decimal"
+	"github.com/zhunismp/tianfu-bank/shared/apperror"
 )
 
 const (
@@ -53,7 +52,7 @@ func (a *AccountAggregate) apply(event TransactionEvent) {
 // Deposit creates a deposit event. Returns the event to be persisted.
 func (a *AccountAggregate) Deposit(amount decimal.Decimal, idempotencyKey string) (*TransactionEvent, error) {
 	if amount.LessThanOrEqual(decimal.Zero) {
-		return nil, fmt.Errorf("deposit amount must be positive")
+		return nil, apperror.New(apperror.ErrCodeInvalidAmount, "deposit amount must be positive", nil)
 	}
 
 	newBalance := a.Balance.Add(amount)
@@ -75,12 +74,12 @@ func (a *AccountAggregate) Deposit(amount decimal.Decimal, idempotencyKey string
 // Withdraw creates a withdrawal event. Returns error if insufficient balance.
 func (a *AccountAggregate) Withdraw(amount decimal.Decimal, idempotencyKey string) (*TransactionEvent, error) {
 	if amount.LessThanOrEqual(decimal.Zero) {
-		return nil, fmt.Errorf("withdrawal amount must be positive")
+		return nil, apperror.New(apperror.ErrCodeInvalidAmount, "withdrawal amount must be positive", nil)
 	}
 
 	newBalance := a.Balance.Sub(amount)
 	if newBalance.LessThan(decimal.Zero) {
-		return nil, fmt.Errorf("insufficient balance: current=%s, requested=%s", a.Balance.String(), amount.String())
+		return nil, apperror.New(apperror.ErrCodeInsufficientFunds, "insufficient balance", nil)
 	}
 
 	nextSeq := a.SequenceNumber + 1
@@ -101,12 +100,12 @@ func (a *AccountAggregate) Withdraw(amount decimal.Decimal, idempotencyKey strin
 // TransferOut creates a transfer-out event on the source account.
 func (a *AccountAggregate) TransferOut(amount decimal.Decimal, destinationAccountID string, idempotencyKey string) (*TransactionEvent, error) {
 	if amount.LessThanOrEqual(decimal.Zero) {
-		return nil, fmt.Errorf("transfer amount must be positive")
+		return nil, apperror.New(apperror.ErrCodeInvalidAmount, "transfer amount must be positive", nil)
 	}
 
 	newBalance := a.Balance.Sub(amount)
 	if newBalance.LessThan(decimal.Zero) {
-		return nil, fmt.Errorf("insufficient balance for transfer: current=%s, requested=%s", a.Balance.String(), amount.String())
+		return nil, apperror.New(apperror.ErrCodeInsufficientFunds, "insufficient balance for transfer", nil)
 	}
 
 	nextSeq := a.SequenceNumber + 1
@@ -128,7 +127,7 @@ func (a *AccountAggregate) TransferOut(amount decimal.Decimal, destinationAccoun
 // TransferIn creates a transfer-in event on the destination account.
 func (a *AccountAggregate) TransferIn(amount decimal.Decimal, sourceAccountID string, idempotencyKey string) (*TransactionEvent, error) {
 	if amount.LessThanOrEqual(decimal.Zero) {
-		return nil, fmt.Errorf("transfer amount must be positive")
+		return nil, apperror.New(apperror.ErrCodeInvalidAmount, "transfer amount must be positive", nil)
 	}
 
 	newBalance := a.Balance.Add(amount)

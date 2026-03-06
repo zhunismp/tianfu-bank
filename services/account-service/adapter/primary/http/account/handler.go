@@ -1,8 +1,11 @@
 package account
 
 import (
+	"errors"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/zhunismp/tianfu-bank/services/account-service/core/domain/account"
+	"github.com/zhunismp/tianfu-bank/shared/apperror"
 )
 
 type AccountHttpHandler struct {
@@ -27,7 +30,7 @@ func (h *AccountHttpHandler) CreateAccount(c *fiber.Ctx) error {
 
 	acc, err := h.accountSvc.CreateAccount(c.Context(), &cmd)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		return handleError(c, err)
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(acc)
@@ -43,8 +46,22 @@ func (h *AccountHttpHandler) GetAccount(c *fiber.Ctx) error {
 
 	acc, err := h.accountSvc.GetAccountById(c.Context(), &q)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		return handleError(c, err)
 	}
 
 	return c.JSON(acc)
+}
+
+func handleError(c *fiber.Ctx, err error) error {
+	var appErr *apperror.AppError
+	if errors.As(err, &appErr) {
+		return c.Status(apperror.MapToHTTPStatus(appErr.Code)).JSON(fiber.Map{
+			"code":    appErr.Code,
+			"message": appErr.Message,
+		})
+	}
+	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+		"code":    apperror.ErrCodeInternal,
+		"message": "an internal error occurred",
+	})
 }

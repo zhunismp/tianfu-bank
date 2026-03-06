@@ -1,10 +1,12 @@
 package transaction
 
 import (
+	"errors"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	domain "github.com/zhunismp/tianfu-bank/services/transaction-service/core/domain/transaction"
+	"github.com/zhunismp/tianfu-bank/shared/apperror"
 )
 
 type TransactionHttpHandler struct {
@@ -37,7 +39,7 @@ func (h *TransactionHttpHandler) Deposit(c *fiber.Ctx) error {
 
 	event, err := h.txnSvc.Deposit(c.Context(), cmd)
 	if err != nil {
-		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{"error": err.Error()})
+		return handleError(c, err)
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(toTransactionResponse(event))
@@ -65,7 +67,7 @@ func (h *TransactionHttpHandler) Withdraw(c *fiber.Ctx) error {
 
 	event, err := h.txnSvc.Withdraw(c.Context(), cmd)
 	if err != nil {
-		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{"error": err.Error()})
+		return handleError(c, err)
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(toTransactionResponse(event))
@@ -94,7 +96,7 @@ func (h *TransactionHttpHandler) Transfer(c *fiber.Ctx) error {
 
 	events, err := h.txnSvc.Transfer(c.Context(), cmd)
 	if err != nil {
-		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{"error": err.Error()})
+		return handleError(c, err)
 	}
 
 	// events may be nil for idempotent replays
@@ -126,7 +128,7 @@ func (h *TransactionHttpHandler) GetHistory(c *fiber.Ctx) error {
 
 	items, err := h.txnSvc.GetHistory(c.Context(), query)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		return handleError(c, err)
 	}
 
 	txns := make([]TransactionResponse, len(items))
@@ -144,6 +146,20 @@ func (h *TransactionHttpHandler) GetHistory(c *fiber.Ctx) error {
 	return c.JSON(HistoryResponse{
 		AccountID:    accountID,
 		Transactions: txns,
+	})
+}
+
+func handleError(c *fiber.Ctx, err error) error {
+	var appErr *apperror.AppError
+	if errors.As(err, &appErr) {
+		return c.Status(apperror.MapToHTTPStatus(appErr.Code)).JSON(fiber.Map{
+			"code":    appErr.Code,
+			"message": appErr.Message,
+		})
+	}
+	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+		"code":    apperror.ErrCodeInternal,
+		"message": "an internal error occurred",
 	})
 }
 
